@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
 
+// prevent passing a new instance of noop on every render
+const noop = () => null;
+
 /**
  * A simple React hook for differentiating single and double clicks on the same component.
  *
@@ -11,8 +14,8 @@ import { useEffect } from 'react';
 const useDoubleClick = ({
   ref,
   latency = 300,
-  onSingleClick = () => null,
-  onDoubleClick = () => null
+  onSingleClick = noop,
+  onDoubleClick = noop
 }) => {
   useEffect(() => {
     const clickRef = ref.current;
@@ -35,7 +38,7 @@ const useDoubleClick = ({
     return () => {
       clickRef.removeEventListener('click', handleClick);
     };
-  });
+  }, [latency, onDoubleClick, onSingleClick, ref]);
 };
 
 export default useDoubleClick;

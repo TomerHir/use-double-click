@@ -36,6 +36,21 @@ test('calls "onDoubleClick" callback on double click', async () => {
   expect(onDoubleClick).toHaveBeenCalledTimes(1);
 });
 
+test('calls "onDoubleClick" callback on double click despite rerender between clicks', async () => {
+  const onDoubleClick = jest.fn();
+  const { getByText, rerender } = render(
+    <Button onDoubleClick={onDoubleClick} />
+  );
+
+  fireEvent.click(getByText(/Click Me/i));
+  rerender(<Button onDoubleClick={onDoubleClick} />);
+  fireEvent.click(getByText(/Click Me/i));
+
+  await new Promise(r => setTimeout(r, 300));
+
+  expect(onDoubleClick).toHaveBeenCalledTimes(1);
+});
+
 test('calls "onSingleClick" callback with custom latency', async () => {
   const onSingleClick = jest.fn();
   const latency = 150;
